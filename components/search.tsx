@@ -55,7 +55,7 @@ const search = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=1&appid=${NEXT_PUBLIC_Api_key}`;
+    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=1&appid=${process.env.NEXT_PUBLIC_Api_key}`;
 
     getServerSideProps(geocoing_ipa_url);
   };
