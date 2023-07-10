@@ -2,22 +2,19 @@
 import { useEffect, useState } from "react";
 import Weather from "./weather";
 
-async function getData(url:string) {
-  const res = await fetch(url)
+async function getData(url: string) {
+  const res = await fetch(url);
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
- 
+
   // Recommendation: handle errors
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data')
+    throw new Error("Failed to fetch data");
   }
- 
-  return res.json()
+
+  return res.json();
 }
- 
-
-
 
 const search = () => {
   const [data, setData] = useState<any>({});
@@ -27,21 +24,21 @@ const search = () => {
   const [lon, setLon] = useState();
   const [country, setCountry] = useState("");
   const [value, setValue] = useState<string>("");
-  let NEXT_PUBLIC_Api_key: string = "390b36c6ae2da05ff395c350b20e4e50";
+
   const getWeatherDetails = (
     name: string,
     lat: number,
     lon: number,
     country: string
   ): any => {
-    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${NEXT_PUBLIC_Api_key}`;
-      async function getdateUrl() {
-        const res=await fetch(weatherIpa_Url);
-        const datas = await res.json();
-        setData(datas)
-      }
-      getdateUrl()
+    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_Api_key}`;
+    async function getdateUrl() {
+      const res = await fetch(weatherIpa_Url);
+      const datas = await res.json();
+      setData(datas);
     }
+    getdateUrl();
+  };
   async function getServerSideProps(geocoing_ipa_url: string) {
     const res = await fetch(geocoing_ipa_url);
     const data = await res.json();
@@ -72,15 +69,15 @@ const search = () => {
     } else {
       console.log("no list ");
     }
-
-  
   }, [data]);
 
   return (
     <>
       <form className="w-full  md:w-[50%] mx-auto " onSubmit={handleSubmit}>
         <div className=" flex justify-center items-center ">
-          <h1 className="bg-clip-text text-transparent bg-gradient-to-r from-[#009e54] to-[#eede05] text-6xl font-bold my-8  ">Weather</h1>
+          <h1 className="bg-clip-text text-transparent bg-gradient-to-r from-[#009e54] to-[#eede05] text-6xl font-bold my-8  ">
+            Weather
+          </h1>
         </div>
         <label
           htmlFor="default-search"
