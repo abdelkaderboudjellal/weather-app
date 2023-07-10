@@ -2,6 +2,23 @@
 import { useEffect, useState } from "react";
 import Weather from "./weather";
 
+async function getData(url:string) {
+  const res = await fetch(url)
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+ 
+  // Recommendation: handle errors
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
+ 
+  return res.json()
+}
+ 
+
+
+
 const search = () => {
   const [data, setData] = useState<any>({});
   const [fiveDays, setFiveDays] = useState<any>([]);
@@ -10,20 +27,21 @@ const search = () => {
   const [lon, setLon] = useState();
   const [country, setCountry] = useState("");
   const [value, setValue] = useState<string>("");
-  let Api_key: string = "390b36c6ae2da05ff395c350b20e4e50";
+  let NEXT_PUBLIC_Api_key: string = "390b36c6ae2da05ff395c350b20e4e50";
   const getWeatherDetails = (
     name: string,
     lat: number,
     lon: number,
     country: string
   ): any => {
-    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${Api_key}`;
-    fetch(weatherIpa_Url)
-      .then((res) => res.json())
-      .then((res) => {
-        setData(res);
-      });
-  };
+    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${NEXT_PUBLIC_Api_key}`;
+      async function getdateUrl() {
+        const res=await fetch(weatherIpa_Url);
+        const datas = await res.json();
+        setData(datas)
+      }
+      getdateUrl()
+    }
   async function getServerSideProps(geocoing_ipa_url: string) {
     const res = await fetch(geocoing_ipa_url);
     const data = await res.json();
@@ -40,7 +58,7 @@ const search = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=1&appid=${Api_key}`;
+    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=1&appid=${NEXT_PUBLIC_Api_key}`;
 
     getServerSideProps(geocoing_ipa_url);
   };

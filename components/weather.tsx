@@ -1,12 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect,FC } from "react";
 import { ImLocation } from "react-icons/im";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { GiWindsock } from "react-icons/gi";
 import { WiHumidity } from "react-icons/wi";
 import { MdVisibility } from "react-icons/md";
-import { Cardsday, Map } from "@/components";
+import { Cardsday } from "@/components";
+export const Map: FC = (props: any) => {
+  const [Client, setClient] = useState<FC>();
 
+  useEffect(() => {
+    (async () => {
+      if (typeof global.window !== "undefined") {
+        const newClient = (await import("./map")).default;
+        setClient(() => newClient);
+      }
+    })();
+  }, []);
+
+  if (typeof global.window === "undefined" || !Client) {
+    return null;
+  }
+
+  return Client ? <Client {...props} /> : null;
+};
 import Image from "next/image";
 let dategenerator = (date: any, number: number): any => {
   const forecastDate: any = new Date(date)
@@ -164,9 +181,9 @@ const weather = (props: any) => {
           </div>
           <div className="w-full  flex ml-0">
             <div className="lg:my-3   opacity-85 text-white  lg:rounded-lg w-full">
-              {fiveDays.length != 0 && (
+             {/*  {fiveDays.length != 0 && (
                 <Map lat={props.lat} lon={props.lon} name={props.cityname} />
-              )}
+              )} */}
             </div>
           </div>
 
