@@ -1,12 +1,13 @@
 "use client";
-import { useState, useEffect,FC } from "react";
+import { useState, useEffect, FC } from "react";
 import { ImLocation } from "react-icons/im";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { GiWindsock } from "react-icons/gi";
 import { WiHumidity } from "react-icons/wi";
 import { MdVisibility } from "react-icons/md";
-import { Cardsday } from "@/components";
-export const Map: FC = (props: any) => {
+import { Cardsday/* ,Map */ } from "@/components";
+import Image from "next/image";
+export const Map = (props: any) => {
   const [Client, setClient] = useState<FC>();
 
   useEffect(() => {
@@ -24,7 +25,6 @@ export const Map: FC = (props: any) => {
 
   return Client ? <Client {...props} /> : null;
 };
-import Image from "next/image";
 let dategenerator = (date: any, number: number): any => {
   const forecastDate: any = new Date(date)
     .toLocaleDateString("en-US", {
@@ -181,9 +181,9 @@ const weather = (props: any) => {
           </div>
           <div className="w-full  flex ml-0">
             <div className="lg:my-3   opacity-85 text-white  lg:rounded-lg w-full">
-             {/*  {fiveDays.length != 0 && (
+              {fiveDays.length != 0 && (
                 <Map lat={props.lat} lon={props.lon} name={props.cityname} />
-              )} */}
+              )}
             </div>
           </div>
 
@@ -217,7 +217,7 @@ const weather = (props: any) => {
                 {dataFiltering.map((item: any) => {
                   return (
                     <Cardsday
-                      key={item.main.temp}
+                      key={item.dt_txt}
                       temp={item.main.temp}
                       temp_max={item.main.temp_max}
                       feels_like={item.main.feels_like}

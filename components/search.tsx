@@ -2,36 +2,23 @@
 import { useEffect, useState } from "react";
 import Weather from "./weather";
 
-async function getData(url: string) {
-  const res = await fetch(url);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
-  // Recommendation: handle errors
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
-  }
-
-  return res.json();
-}
-
 const search = () => {
   const [data, setData] = useState<any>({});
   const [fiveDays, setFiveDays] = useState<any>([]);
-  const [cityname, setCityname] = useState("Médéa");
-  const [lat, setLat] = useState();
-  const [lon, setLon] = useState();
-  const [country, setCountry] = useState("");
+  const [cityname, setCityname] = useState<string>("Médéa");
+  const [lat, setLat] = useState<number>();
+  const [lon, setLon] = useState<number>();
+  const [country, setCountry] = useState<string>("");
   const [value, setValue] = useState<string>("");
-
+  let NEXT_PUBLIC_Api_key: string = "390b36c6ae2da05ff395c350b20e4e50";
+  //---------------------fetch app---------------------------
   const getWeatherDetails = (
     name: string,
     lat: number,
     lon: number,
     country: string
   ): any => {
-    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_Api_key}`;
+    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${NEXT_PUBLIC_Api_key}`;
     async function getdateUrl() {
       const res = await fetch(weatherIpa_Url);
       const datas = await res.json();
@@ -39,7 +26,8 @@ const search = () => {
     }
     getdateUrl();
   };
-  async function getServerSideProps(geocoing_ipa_url: string) {
+  async function getServerSideProps(values: string) {
+    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${values}&limit=1&appid=${NEXT_PUBLIC_Api_key}`;
     const res = await fetch(geocoing_ipa_url);
     const data = await res.json();
     const { name, lat, lon, country } = data[0];
@@ -48,28 +36,23 @@ const search = () => {
     setLon(lon);
     setCountry(country);
     getWeatherDetails(name, lat, lon, country);
-
     return data;
   }
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=1&appid=${process.env.NEXT_PUBLIC_Api_key}`;
-
-    getServerSideProps(geocoing_ipa_url);
-  };
 
   useEffect(() => {
     if (data.list) {
       let fiveDays = data.list;
-      let uniqueForceDays: any = [];
 
       setFiveDays(fiveDays);
     } else {
       console.log("no list ");
     }
   }, [data]);
+  //----------------------submit------------------------
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    getServerSideProps(value);
+  };
 
   return (
     <>
