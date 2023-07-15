@@ -10,7 +10,7 @@ const search = () => {
   const [lon, setLon] = useState<number>();
   const [country, setCountry] = useState<string>("");
   const [value, setValue] = useState<string>("");
-  let NEXT_PUBLIC_Api_key: string = "390b36c6ae2da05ff395c350b20e4e50";
+
   //---------------------fetch app---------------------------
   const getWeatherDetails = (
     name: string,
