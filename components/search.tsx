@@ -18,7 +18,7 @@ const search = () => {
     lon: number,
     country: string
   ): any => {
-    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${NEXT_PUBLIC_Api_key}`;
+    const weatherIpa_Url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${process.env.NEXT_PUBLIC_Api_key}`;
     async function getdateUrl() {
       const res = await fetch(weatherIpa_Url);
       const datas = await res.json();
@@ -27,7 +27,7 @@ const search = () => {
     getdateUrl();
   };
   async function getServerSideProps(values: string) {
-    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${values}&limit=1&appid=${NEXT_PUBLIC_Api_key}`;
+    const geocoing_ipa_url: string = `http://api.openweathermap.org/geo/1.0/direct?q=${values}&limit=1&appid=${process.env.NEXT_PUBLIC_Api_key}`;
     const res = await fetch(geocoing_ipa_url);
     const data = await res.json();
     const { name, lat, lon, country } = data[0];
