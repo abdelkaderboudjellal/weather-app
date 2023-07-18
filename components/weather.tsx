@@ -5,26 +5,19 @@ import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { GiWindsock } from "react-icons/gi";
 import { WiHumidity } from "react-icons/wi";
 import { MdVisibility } from "react-icons/md";
-import { Cardsday/* ,Map */ } from "@/components";
+import { Cardsday /* ,Map */ } from "@/components";
 import Image from "next/image";
-export const Map = (props: any) => {
-  const [Client, setClient] = useState<FC>();
+import dynamic from "next/dynamic";
 
-  useEffect(() => {
-    (async () => {
-      if (typeof global.window !== "undefined") {
-        const newClient = (await import("./map")).default;
-        setClient(() => newClient);
-      }
-    })();
-  }, []);
-
-  if (typeof global.window === "undefined" || !Client) {
-    return null;
-  }
-
-  return Client ? <Client {...props} /> : null;
-};
+const Map = dynamic(() => import("./map"), {
+  loading: () => (
+    <div className="flex justify-center items-center">
+    <div className="relative w-24 h-24 animate-spin rounded-full bg-gradient-to-r from-purple-400 via-blue-500 to-red-400 ">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gray-200 rounded-full border-2 border-white"></div>
+    </div>
+    </div>
+  ),
+});
 let dategenerator = (date: any, number: number): any => {
   const forecastDate: any = new Date(date)
     .toLocaleDateString("en-US", {
@@ -67,14 +60,20 @@ const weather = (props: any) => {
     <>
       <div className="  w-[100%] sm:w-[800px] px-0 lg:px-8  mt-24">
         <div className="flex flex-wrap w-full ">
-          <div className="w-full  flex rounded-3xl my-6 bg-[url('https://img.freepik.com/free-photo/raindrops-window-with-blue-sky_53876-142999.jpg?w=996&t=st=1688088419~exp=1688089019~hmac=0205af5d240ab87cc4090d8442a1bbe7751f4aeb22a3a61ed37750343d42d4da')]  bg-cover bg-center">
-            {fiveDays.length != 0 ? (
-              <>
+          {fiveDays.length == 0 ? (
+            <div className="flex justify-center items-center w-full ">
+              <h1 className="font-bold text-yellow-100 text-5xl">
+                please enter country
+              </h1>
+            </div>
+          ) : (
+            <>
+              <div className="w-full  flex rounded-3xl my-6 bg-[url('https://img.freepik.com/free-photo/raindrops-window-with-blue-sky_53876-142999.jpg?w=996&t=st=1688088419~exp=1688089019~hmac=0205af5d240ab87cc4090d8442a1bbe7751f4aeb22a3a61ed37750343d42d4da')]  bg-cover bg-center">
                 <div
                   className={
                     fiveDays[0].sys.pod == "n"
-                      ? "rounded-lg py-6 px-8  w-full bg-[url('https://img.freepik.com/premium-vector/stary-sky-background_583556-181.jpg?w=996')] opacity-90  text-white"
-                      : "rounded-lg py-6 px-8  w-full bg-[#1b90df] opacity-90  text-white"
+                      ? "rounded-3xl py-6 px-8  w-full bg-[url('https://img.freepik.com/premium-vector/stary-sky-background_583556-181.jpg?w=996')] opacity-90  text-white"
+                      : "rounded-3xl  py-6 px-8  w-full bg-[#1b90df] opacity-90  text-white"
                   }
                 >
                   <div className="mb-8">
@@ -145,96 +144,66 @@ const weather = (props: any) => {
                     </div>
                   </div>
                 </div>
-              </>
-            ) : (
-              <div className="rounded-lg py-6 px-8  w-full bg-[#1b90df] opacity-90  text-white">
-                <div className="mb-8">
-                  <h2 className="font-bold text-3xl leading-none pb-1">
-                    {day}
-                  </h2>
-                  <h3 className="leading-none pb-2 pl-1">
-                    {date} {dategenerator(date1, 2)}
-                  </h3>
-                  <p className="flex aling-center opacity-75">
-                    <ImLocation size={20} color="white" />
-                    {props.cityname}
-                  </p>
-                </div>
-                <div className="flex flex-col w-full  ">
-                  <div className="flex justify-center">
-                    <Image
-                      src={"/weather/01d.svg"}
-                      width={200}
-                      height={200}
-                      alt="Picture of the author"
-                    />
-                    <div className="flex flex-col justify-around">
-                      <strong className="leading-none text-6xl block font-weight-bolder">
-                        29ºC
-                      </strong>
-                      <b className="text-2xl block font-bold">Sunny</b>
-                    </div>
-                  </div>
+              </div>
+              <div className="w-full  flex ml-0">
+                <div className="lg:my-3   opacity-85 text-white  lg:rounded-lg w-full">
+                  <Map
+                    lat={props.lat}
+                    lon={props.lon}
+                    name={props.cityname}
+                  />
                 </div>
               </div>
-            )}
-          </div>
-          <div className="w-full  flex ml-0">
-            <div className="lg:my-3   opacity-85 text-white  lg:rounded-lg w-full">
-              {fiveDays.length != 0 && (
-                <Map lat={props.lat} lon={props.lon} name={props.cityname} />
-              )}
-            </div>
-          </div>
-
-          <div
-            className="z-30 rounded-md shadow-sm grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 mx-auto  "
-            role="group"
-          >
-            {uniqueForceDays.map((day: any) => {
-              return (
-                <button
-                  key={day}
-                  type="button"
-                  className="text-gray-900  bg-white border border-gray-300 focus:outline-none hover:bg-[#201d36]  hover:border-[#201d36] hover:text-white font-medium rounded-xl text-sm px-4 py-2.5 mr-2 mb-2 focus:bg-[#201d36] focus:text-white "
-                  onClick={() => {
-                    setDayshow(day);
-                  }}
-                >
-                  {day == uniqueForceDays[0]
-                    ? "Today"
-                    : day == uniqueForceDays[1]
-                    ? "Tomorrow"
-                    : day}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="w-full  flex ml-0 ">
-            <div className="lg:my-3 backdrop-blur-sm  text-black  lg:rounded-lg w-full h-full">
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 ">
-                {dataFiltering.map((item: any) => {
+              <div
+                className="z-30 my-4 rounded-md shadow-sm grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 mx-auto  "
+                role="group"
+              >
+                {uniqueForceDays.map((day: any) => {
                   return (
-                    <Cardsday
-                      key={item.dt_txt}
-                      temp={item.main.temp}
-                      temp_max={item.main.temp_max}
-                      feels_like={item.main.feels_like}
-                      weather={item.weather[0].main}
-                      weatherId={item.sys.pod}
-                      description={item.weather[0].description}
-                      wind={item.wind.gust}
-                      visibility={item.wind.speed}
-                      humidity={item.main.humidity}
-                      image={item.weather[0].icon}
-                      date={item.dt_txt}
-                    />
+                    <button
+                      key={day}
+                      type="button"
+                      className="text-gray-900  bg-white border border-gray-300 focus:outline-none hover:bg-[#201d36]  hover:border-[#201d36] hover:text-white font-medium rounded-xl text-sm px-4 py-2.5 mr-2 mb-2 focus:bg-[#201d36] focus:text-white "
+                      onClick={() => {
+                        setDayshow(day);
+                      }}
+                    >
+                      {day == uniqueForceDays[0]
+                        ? "Today"
+                        : day == uniqueForceDays[1]
+                        ? "Tomorrow"
+                        : day}
+                    </button>
                   );
                 })}
               </div>
-            </div>
-          </div>
+
+              <div className="w-full  flex ml-0 ">
+                <div className="lg:my-3 backdrop-blur-sm  text-black  lg:rounded-lg w-full h-full">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 ">
+                    {dataFiltering.map((item: any) => {
+                      return (
+                        <Cardsday
+                          key={item.dt_txt}
+                          temp={item.main.temp}
+                          temp_max={item.main.temp_max}
+                          feels_like={item.main.feels_like}
+                          weather={item.weather[0].main}
+                          weatherId={item.sys.pod}
+                          description={item.weather[0].description}
+                          wind={item.wind.gust}
+                          visibility={item.wind.speed}
+                          humidity={item.main.humidity}
+                          image={item.weather[0].icon}
+                          date={item.dt_txt}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

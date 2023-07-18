@@ -4,24 +4,26 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useEffect, useState, useRef } from "react";
 
-const map= (props: any) => {
+const map = (props: any) => {
   const position: LatLngExpression = [props.lat, props.lon];
   let zoom: number = 13;
 
-
+  
   return (
     <div className="m-0 overflow-hidden h-[380px] w-full">
       <MapContainer
+  
         style={{ height: "380px", borderRadius: "16px" }}
         zoom={zoom}
         center={position}
         scrollWheelZoom={false}
-        /* loadingControl={true} */
+        worldCopyJump={false}
         className="map-container"
       >
         <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          noWrap={true}
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Marker position={position}>
